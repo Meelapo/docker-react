@@ -1,0 +1,24 @@
+# Tell Travis we need a copy of docker running
+# Build our image using Dockerfile.dev
+# Tell Travis how to run our test suite
+# Tell Travis how to deploy our code to AWS
+
+# Ensures image uses has the proper programming language and services available
+language: generic
+
+# Tells Travis to get super user permissions
+sudo: required
+
+# TravisCI will add Docker to the container
+services:
+    - docker
+
+# Things that need to occur before tests are run
+# We'll need our docker image to be built
+before_install:
+    - docker build -t captainslow/docker-react -f Dockerfile.dev .
+
+# Series of commands that will need to be executed in order to run tests
+# If TravisCI ever gets a return status of something other than 0 it will assume the build/test are broken
+script:
+    - docker run -e CI=true captainslow/docker-react npm run test
