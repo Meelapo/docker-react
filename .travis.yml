@@ -22,3 +22,19 @@ before_install:
 # If TravisCI ever gets a return status of something other than 0 it will assume the build/test are broken
 script:
     - docker run -e CI=true captainslow/docker-react npm run test
+
+# Configuration to tell TravisCI to deploy to AWS
+# TravisCI comes with some pre-configured instructions to deploy to specific locations
+# TravisCI will need to upload all the code content to an S3 bucket and then tell elasticbeanstalk to redo its work
+# Will only get deployed when the "main" branch gets pushed
+deploy:
+    provider: elasticbeanstalk
+    region: "ca-central-1"
+    app: "docker-react"
+    env: "Dockerreact-env"
+    bucket_name: "elasticbeanstalk-ca-central-1-195906913238"
+    bucket_path: "docker-react"
+    on:
+        branch: main
+    access_key_id: $AWS_ACCESS_KEY
+    secret_access_key: $AWS_SECRET_KEY
